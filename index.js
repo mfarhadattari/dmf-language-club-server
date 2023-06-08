@@ -11,6 +11,7 @@ app.use(cors());
 app.use(express.json());
 
 // !------------------- ROUTES IMPORT ------------------- //
+const publicRoute = require("./routes/public");
 const userRoute = require("./routes/user");
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.rxhaoz0.mongodb.net/?retryWrites=true&w=majority`;
@@ -33,11 +34,12 @@ async function run() {
     const database = client.db("dmf-language-club");
     app.use((req, res, next) => {
       req.userCollection = database.collection("users");
-
+      req.classCollection = database.collection("classes");
       next();
     });
 
     // ! ------------- Route Middleware ------------------ //
+    app.use("/", publicRoute);
     app.use("/user", userRoute);
 
     // Send a ping to confirm a successful connection
