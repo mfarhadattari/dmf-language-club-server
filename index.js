@@ -10,6 +10,9 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
+// !------------------- ROUTES IMPORT ------------------- //
+const userRoute = require("./routes/user");
+
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.rxhaoz0.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -26,8 +29,16 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     client.connect();
 
-    // ! Database Collection
+    // !----------- Database Collections ---------------- //
     const database = client.db("dmf-language-club");
+    app.use((req, res, next) => {
+      req.userCollection = database.collection("users");
+
+      next();
+    });
+
+    // ! ------------- Route Middleware ------------------ //
+    app.use("/user", userRoute);
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
