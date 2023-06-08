@@ -35,6 +35,7 @@ async function run() {
     app.use((req, res, next) => {
       req.userCollection = database.collection("users");
       req.classCollection = database.collection("classes");
+      req.reviewCollection = database.collection("reviews");
       next();
     });
 

@@ -21,4 +21,10 @@ router.get("/popular-instructor", async (req, res) => {
   res.send(result);
 });
 
+router.get("/reviews", async (req, res) => {
+  const reviewCollection = req.reviewCollection;
+  const result = await reviewCollection.find().toArray();
+  res.send(result.reverse());
+});
+
 module.exports = router;
