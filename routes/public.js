@@ -21,6 +21,13 @@ router.get("/popular-instructor", async (req, res) => {
   res.send(result);
 });
 
+router.get("/all-instructor", async (req, res) => {
+  const userCollection = req.userCollection;
+  const query = { role: "instructor" };
+  const result = await userCollection.find(query).toArray();
+  res.send(result);
+});
+
 router.get("/reviews", async (req, res) => {
   const reviewCollection = req.reviewCollection;
   const result = await reviewCollection.find().toArray();
