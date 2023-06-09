@@ -16,7 +16,7 @@ router.get("/popular-classes", async (req, res) => {
 router.get("/all-classes", async (req, res) => {
   const classCollection = req.classCollection;
   const result = await classCollection.find().toArray();
-  res.send(result);
+  res.send(result.reverse());
 });
 
 // !------------------ POPULAR INSTRUCTORS ----------------! //
