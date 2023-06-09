@@ -13,6 +13,7 @@ app.use(express.json());
 // !------------------- ROUTES IMPORT ------------------- //
 const publicRoute = require("./routes/public");
 const userRoute = require("./routes/user");
+const otherRoute = require("./routes/other");
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.rxhaoz0.mongodb.net/?retryWrites=true&w=majority`;
 
@@ -41,6 +42,7 @@ async function run() {
 
     // ! ------------- Route Middleware ------------------ //
     app.use("/", publicRoute);
+    app.use("/", otherRoute);
     app.use("/user", userRoute);
 
     // Send a ping to confirm a successful connection
