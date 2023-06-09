@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
+// !------------------ POPULAR CLASSES ----------------! //
 router.get("/popular-classes", async (req, res) => {
   const classCollection = req.classCollection;
   const query = {};
@@ -11,7 +12,15 @@ router.get("/popular-classes", async (req, res) => {
   res.send(result);
 });
 
-router.get("/popular-instructor", async (req, res) => {
+// !------------------ ALL CLASS ----------------! //
+router.get("/all-classes", async (req, res) => {
+  const classCollection = req.classCollection;
+  const result = await classCollection.find().toArray();
+  res.send(result);
+});
+
+// !------------------ POPULAR INSTRUCTORS ----------------! //
+router.get("/popular-instructors", async (req, res) => {
   const userCollection = req.userCollection;
   const query = { role: "instructor" };
   const option = {
@@ -21,13 +30,15 @@ router.get("/popular-instructor", async (req, res) => {
   res.send(result);
 });
 
-router.get("/all-instructor", async (req, res) => {
+// !------------------ ALL INSTRUCTORS ----------------! //
+router.get("/all-instructors", async (req, res) => {
   const userCollection = req.userCollection;
   const query = { role: "instructor" };
   const result = await userCollection.find(query).toArray();
   res.send(result);
 });
 
+// !------------------ USERS REVIEWS ----------------! //
 router.get("/reviews", async (req, res) => {
   const reviewCollection = req.reviewCollection;
   const result = await reviewCollection.find().toArray();
