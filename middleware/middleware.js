@@ -39,4 +39,19 @@ const adminVerify = async (req, res, next) => {
   return res.status(403).send({ error: true, message: "Access Forbidden" });
 };
 
-module.exports = { jwtVerify, adminVerify };
+// !----------------- INSTRUCTOR VERIFY ---------------! //
+const instructorVerify = async (req, res, next) => {
+  const email = req.query.email;
+  if (email !== req.decoded.email) {
+    return res.status(403).send({ error: true, message: "Access Forbidden" });
+  }
+  const userCollection = req.userCollection;
+  const query = { email: email };
+  const user = await userCollection.findOne(query);
+  if (user?.role === "instructor") {
+    return next();
+  }
+  return res.status(403).send({ error: true, message: "Access Forbidden" });
+};
+
+module.exports = { jwtVerify, adminVerify, instructorVerify };
