@@ -14,6 +14,7 @@ app.use(express.json());
 const publicRoute = require("./routes/public");
 const userRoute = require("./routes/user");
 const otherRoute = require("./routes/other");
+const adminRoute = require("./routes/admin");
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.rxhaoz0.mongodb.net/?retryWrites=true&w=majority`;
 
@@ -44,6 +45,7 @@ async function run() {
     app.use("/", publicRoute);
     app.use("/", otherRoute);
     app.use("/user", userRoute);
+    app.use("/admin", adminRoute);
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
