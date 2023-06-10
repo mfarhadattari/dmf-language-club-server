@@ -7,5 +7,10 @@ router.get("/users", jwtVerify, adminVerify, async (req, res) => {
   const result = await userCollection.find().toArray();
   res.send(result);
 });
+router.get("/classes", jwtVerify, adminVerify, async (req, res) => {
+  const classCollection = req.classCollection;
+  const result = await classCollection.find().toArray();
+  res.send(result);
+});
 
 module.exports = router;
