@@ -2,6 +2,7 @@ const express = require("express");
 const { jwtVerify, studentVerify } = require("../middleware/middleware");
 const { ObjectId } = require("mongodb");
 const router = express.Router();
+const stripe = require("stripe")(process.env.PAYMENT_SECRET_KEY);
 
 // !----------------------- ADD TO Cart --------------------! //
 router.post("/add-to-cart", jwtVerify, studentVerify, async (req, res) => {
@@ -35,7 +36,7 @@ router.get("/my-carts", jwtVerify, studentVerify, async (req, res) => {
   res.send(result.reverse());
 });
 
-// !--------------------- GET CARTS -------------------! //
+// !--------------------- Delete from CARTS -------------------! //
 router.delete(
   "/delete-from-carts/:id",
   jwtVerify,
@@ -43,8 +44,22 @@ router.delete(
   async (req, res) => {
     const cartCollection = req.cartCollection;
     const id = req.params.id;
-    const result = await cartCollection.deleteOne({ _id: new ObjectId(id)});
+    const result = await cartCollection.deleteOne({ _id: new ObjectId(id) });
     res.send(result);
   }
 );
+
+// !--------------------- GET Cart item Info ----------------------! //
+router.get(
+  "/cart-item-info/:id",
+  jwtVerify,
+  studentVerify,
+  async (req, res) => {
+    const cartCollection = req.cartCollection;
+    const id = req.params.id;
+    const result = await cartCollection.findOne({ _id: new ObjectId(id) });
+    res.send(result);
+  }
+);
+
 module.exports = router;
