@@ -1,5 +1,6 @@
 const express = require("express");
 const { jwtVerify, studentVerify } = require("../middleware/middleware");
+const { ObjectId } = require("mongodb");
 const router = express.Router();
 
 // !----------------------- ADD TO Cart --------------------! //
@@ -34,4 +35,16 @@ router.get("/my-carts", jwtVerify, studentVerify, async (req, res) => {
   res.send(result.reverse());
 });
 
+// !--------------------- GET CARTS -------------------! //
+router.delete(
+  "/delete-from-carts/:id",
+  jwtVerify,
+  studentVerify,
+  async (req, res) => {
+    const cartCollection = req.cartCollection;
+    const id = req.params.id;
+    const result = await cartCollection.deleteOne({ _id: new ObjectId(id)});
+    res.send(result);
+  }
+);
 module.exports = router;

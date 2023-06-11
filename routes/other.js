@@ -20,7 +20,7 @@ router.get("/user-role", jwtVerify, async (req, res) => {
   }
   const query = { email: email };
   const result = await userCollection.findOne(query);
-  res.send({ role: result?.role || student });
+  res.send({ role: result?.role || "student" });
 });
 
 // !---------------- Create User -----------------! //
