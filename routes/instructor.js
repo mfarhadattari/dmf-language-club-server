@@ -6,7 +6,6 @@ const router = express.Router();
 router.post("/add-class", jwtVerify, instructorVerify, async (req, res) => {
   const classCollection = req.classCollection;
   const data = req.body;
-  console.log(data);
   const result = await classCollection.insertOne(data);
   res.send(result);
 });
@@ -17,7 +16,7 @@ router.get("/my-classes", jwtVerify, instructorVerify, async (req, res) => {
   const email = req.query.email;
   const query = { instructorEmail: email };
   const result = await classCollection.find(query).toArray();
-  res.send(result);
+  res.send(result.reverse());
 });
 
 module.exports = router;

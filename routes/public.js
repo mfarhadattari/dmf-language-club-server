@@ -4,7 +4,7 @@ const router = express.Router();
 // !------------------ POPULAR CLASSES ----------------! //
 router.get("/popular-classes", async (req, res) => {
   const classCollection = req.classCollection;
-  const query = {};
+  const query = { status: "approve" };
   const option = {
     sort: { enrolledStudents: -1 },
   };
@@ -15,7 +15,8 @@ router.get("/popular-classes", async (req, res) => {
 // !------------------ ALL CLASS ----------------! //
 router.get("/all-classes", async (req, res) => {
   const classCollection = req.classCollection;
-  const result = await classCollection.find().toArray();
+  const query = { status: "approve" };
+  const result = await classCollection.find(query).toArray();
   res.send(result.reverse());
 });
 
