@@ -27,4 +27,17 @@ router.patch("/approve-class/:id", jwtVerify, adminVerify, async (req, res) => {
   res.send(result);
 });
 
+router.patch("/denied-class/:id", jwtVerify, adminVerify, async (req, res) => {
+  const classCollection = req.classCollection;
+  const id = req.params.id;
+  const query = { _id: new ObjectId(id) };
+  const updateStatus = {
+    $set: {
+      status: "denied",
+    },
+  };
+  const result = await classCollection.updateOne(query, updateStatus);
+  res.send(result);
+});
+
 module.exports = router;
