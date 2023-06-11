@@ -39,6 +39,7 @@ async function run() {
       req.userCollection = database.collection("users");
       req.classCollection = database.collection("classes");
       req.reviewCollection = database.collection("reviews");
+      req.cartCollection = database.collection("carts");
       next();
     });
 
