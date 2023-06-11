@@ -31,6 +31,20 @@ router.patch("/make-admin", jwtVerify, adminVerify, async (req, res) => {
   res.send(result);
 });
 
+// ! ------------------------- Make Instructor -------------------------! //
+router.patch("/make-instructor", jwtVerify, adminVerify, async (req, res) => {
+  const userCollection = req.userCollection;
+  const email = req.body.email;
+  const query = { email: email };
+  const updateRole = {
+    $set: {
+      role: "instructor",
+    },
+  };
+  const result = await userCollection.updateOne(query, updateRole);
+  res.send(result);
+});
+
 // ! ------------------------- Approve Class --------------------------! //
 router.patch("/approve-class/:id", jwtVerify, adminVerify, async (req, res) => {
   const classCollection = req.classCollection;
