@@ -9,10 +9,26 @@ router.get("/users", jwtVerify, adminVerify, async (req, res) => {
   const result = await userCollection.find().toArray();
   res.send(result.reverse());
 });
+
+// ! --------------------------- All Class ------------------------! //
 router.get("/classes", jwtVerify, adminVerify, async (req, res) => {
   const classCollection = req.classCollection;
   const result = await classCollection.find().toArray();
   res.send(result.reverse());
+});
+
+// ! ------------------------- Make Admin -------------------------! //
+router.patch("/make-admin", jwtVerify, adminVerify, async (req, res) => {
+  const userCollection = req.userCollection;
+  const email = req.body.email;
+  const query = { email: email };
+  const updateRole = {
+    $set: {
+      role: "admin",
+    },
+  };
+  const result = await userCollection.updateOne(query, updateRole);
+  res.send(result);
 });
 
 // ! ------------------------- Approve Class --------------------------! //
