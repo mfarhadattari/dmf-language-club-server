@@ -62,4 +62,22 @@ router.get(
   }
 );
 
+// !-------------------- Payment Intent -----------------! //
+router.post(
+  "/create-payment-intent",
+  jwtVerify,
+  studentVerify,
+  async (req, res) => {
+    const data = req.body;
+    const price = parseInt(data.price * 100);
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: price,
+      currency: "usd",
+      payment_method_types: ["card"],
+    });
+
+    res.send({ clientSecret: paymentIntent.client_secret });
+  }
+);
+
 module.exports = router;
