@@ -12,7 +12,6 @@ app.use(express.json());
 
 // !------------------- ROUTES IMPORT ------------------- //
 const publicRoute = require("./routes/public");
-const userRoute = require("./routes/user");
 const otherRoute = require("./routes/other");
 const adminRoute = require("./routes/admin");
 const instructorRoute = require("./routes/instructor");
@@ -45,7 +44,6 @@ async function run() {
     // ! ------------- Route Middleware ------------------ //
     app.use("/", publicRoute);
     app.use("/", otherRoute);
-    app.use("/user", userRoute);
     app.use("/instructor", instructorRoute);
     app.use("/admin", adminRoute);
 

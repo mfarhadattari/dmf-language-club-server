@@ -3,6 +3,7 @@ const { jwtVerify, adminVerify } = require("../middleware/middleware");
 const { ObjectId } = require("mongodb");
 const router = express.Router();
 
+// ! ------------------------- All Users --------------------------! //
 router.get("/users", jwtVerify, adminVerify, async (req, res) => {
   const userCollection = req.userCollection;
   const result = await userCollection.find().toArray();
@@ -14,19 +15,42 @@ router.get("/classes", jwtVerify, adminVerify, async (req, res) => {
   res.send(result.reverse());
 });
 
+// ! ------------------------- Approve Class --------------------------! //
 router.patch("/approve-class/:id", jwtVerify, adminVerify, async (req, res) => {
   const classCollection = req.classCollection;
+  const userCollection = req.userCollection;
   const id = req.params.id;
   const query = { _id: new ObjectId(id) };
+  const instructorEmail = req.body.instructorEmail;
+  const instructor = await userCollection.findOne({ email: instructorEmail });
+
+  //! update status
   const updateStatus = {
     $set: {
       status: "approve",
     },
   };
-  const result = await classCollection.updateOne(query, updateStatus);
-  res.send(result);
+  const updateStatusResult = await classCollection.updateOne(
+    query,
+    updateStatus
+  );
+  if (updateStatusResult.modifiedCount > 0) {
+    //! update number of class
+    const updateClass = {
+      $set: {
+        totalClass: (instructor?.totalClass || 0) + 1,
+      },
+    };
+    const updateClassResult = await userCollection.updateOne(
+      { email: instructorEmail },
+      updateClass
+    );
+
+    res.send(updateClassResult);
+  }
 });
 
+// ! ------------------------- Denied Class --------------------------! //
 router.patch("/denied-class/:id", jwtVerify, adminVerify, async (req, res) => {
   const classCollection = req.classCollection;
   const id = req.params.id;
@@ -40,6 +64,7 @@ router.patch("/denied-class/:id", jwtVerify, adminVerify, async (req, res) => {
   res.send(result);
 });
 
+// ! ------------------------- Feedback --------------------------! //
 router.post("/class-feedback/:id", jwtVerify, adminVerify, async (req, res) => {
   const classCollection = req.classCollection;
   const id = req.params.id;
