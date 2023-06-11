@@ -10,6 +10,7 @@ router.post("/add-to-cart", jwtVerify, studentVerify, async (req, res) => {
   res.send(result);
 });
 
+// !---------------------- Check Class Status ------------! //
 router.get("/check-class/:id", jwtVerify, studentVerify, async (req, res) => {
   // TODO: Also check if paid or ordered
   const cartCollection = req.cartCollection;
@@ -22,6 +23,15 @@ router.get("/check-class/:id", jwtVerify, studentVerify, async (req, res) => {
   } else {
     return res.send({ status: null });
   }
+});
+
+// !--------------------- GET CARTS -------------------! //
+router.get("/my-carts", jwtVerify, studentVerify, async (req, res) => {
+  const cartCollection = req.cartCollection;
+  const email = req.query.email;
+  const query = { email: email };
+  const result = await cartCollection.find(query).toArray();
+  res.send(result.reverse());
 });
 
 module.exports = router;
