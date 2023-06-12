@@ -80,4 +80,18 @@ router.post(
   }
 );
 
+// !------------------------ Payment Confirmation -------------! //
+router.post("/order-confirm", jwtVerify, studentVerify, async (req, res) => {
+  const orderCollection = req.orderCollection;
+  const cartCollection = req.cartCollection;
+  const data = req.body;
+  const { cartId } = data;
+  const removeResult = await cartCollection.deleteOne({
+    _id: new ObjectId(cartId),
+  });
+  if (removeResult.deletedCount > 0) {
+    const result = await orderCollection.insertOne(data);
+    return res.send(result);
+  }
+});
 module.exports = router;

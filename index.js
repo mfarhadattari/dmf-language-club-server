@@ -40,6 +40,7 @@ async function run() {
       req.classCollection = database.collection("classes");
       req.reviewCollection = database.collection("reviews");
       req.cartCollection = database.collection("carts");
+      req.orderCollection = database.collection("orders")
       next();
     });
 
