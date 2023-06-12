@@ -109,4 +109,42 @@ router.post("/class-feedback/:id", jwtVerify, adminVerify, async (req, res) => {
   res.send(result);
 });
 
+// !----------------------- Admin Profile ---------------------! //
+router.get("/profile", jwtVerify, adminVerify, async (req, res) => {
+  const userCollection = req.userCollection;
+  const cartCollection = req.cartCollection;
+  const orderCollection = req.orderCollection;
+  const classCollection = req.classCollection;
+  const email = req.query.email;
+  const query = { email: email };
+  const personalInfo = await userCollection.findOne(query);
+  const totalOrders = await orderCollection.estimatedDocumentCount();
+  const totalCarts = await cartCollection.estimatedDocumentCount();
+  const approveClass = await classCollection.countDocuments({
+    status: "approve",
+  });
+  const pendingClass = await classCollection.countDocuments({
+    status: "pending" || !status,
+  });
+  const deniedClass = await classCollection.countDocuments({
+    status: "denied",
+  });
+  const totalStudents = await userCollection.countDocuments({
+    role: "student" || !role,
+  });
+  const totalInstructors = await userCollection.countDocuments({
+    role: "instructor" || !role,
+  });
+  res.send({
+    ...personalInfo,
+    totalOrders,
+    totalCarts,
+    approveClass,
+    deniedClass,
+    pendingClass,
+    totalStudents,
+    totalInstructors,
+  });
+});
+
 module.exports = router;
