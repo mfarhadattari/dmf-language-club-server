@@ -14,14 +14,17 @@ router.post("/add-to-cart", jwtVerify, studentVerify, async (req, res) => {
 
 // !---------------------- Check Class Status ------------! //
 router.get("/check-class/:id", jwtVerify, studentVerify, async (req, res) => {
-  // TODO: Also check if paid or ordered
   const cartCollection = req.cartCollection;
+  const orderCollection = req.orderCollection;
   const email = req.query.email;
   const id = req.params.id;
   const query = { classId: id, email: email };
   const inCart = await cartCollection.findOne(query);
+  const inOrder = await orderCollection.findOne(query);
   if (inCart) {
     return res.send({ status: "selected" });
+  } else if (inOrder) {
+    return res.send({ status: "enrolled" });
   } else {
     return res.send({ status: null });
   }
