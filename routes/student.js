@@ -147,4 +147,17 @@ router.post("/order-confirm", jwtVerify, studentVerify, async (req, res) => {
     }
   }
 });
+
+// !---------------------- Payment History ---------------------! //
+router.get("/payment-history", async (req, res) => {
+  const orderCollection = req.orderCollection;
+  const email = req.query.email;
+  const sort = { paymentTime: -1 };
+  const result = await orderCollection
+    .find({ email: email })
+    .sort(sort)
+    .toArray();
+  res.send(result);
+});
+
 module.exports = router;
