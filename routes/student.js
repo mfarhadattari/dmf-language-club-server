@@ -65,6 +65,14 @@ router.get(
   }
 );
 
+// !----------------------- MY Enrolled ----------------------------! //
+router.get("/my-enrolled", jwtVerify, studentVerify, async (req, res) => {
+  const orderCollection = req.orderCollection;
+  const email = req.query.email;
+  const myEnrolled = await orderCollection.find({ email: email }).toArray();
+  res.send(myEnrolled);
+});
+
 // !-------------------- Payment Intent -----------------! //
 router.post(
   "/create-payment-intent",
