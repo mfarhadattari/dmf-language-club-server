@@ -80,18 +80,60 @@ router.post(
   }
 );
 
-// !------------------------ Payment Confirmation -------------! //
+// !------------------------ Order Confirmation -------------! //
 router.post("/order-confirm", jwtVerify, studentVerify, async (req, res) => {
   const orderCollection = req.orderCollection;
   const cartCollection = req.cartCollection;
+  const classCollection = req.classCollection;
+  const userCollection = req.userCollection;
   const data = req.body;
-  const { cartId } = data;
-  const removeResult = await cartCollection.deleteOne({
-    _id: new ObjectId(cartId),
+  const { cartId, classId, instructorEmail } = data;
+
+  // ! Update Class Info
+  const classInfo = await classCollection.findOne({
+    _id: new ObjectId(classId),
   });
-  if (removeResult.deletedCount > 0) {
-    const result = await orderCollection.insertOne(data);
-    return res.send(result);
+  if (classInfo) {
+    const updateClass = {
+      $set: {
+        availableSeats: classInfo.availableSeats - 1,
+        enrolledStudents: classInfo.enrolledStudents + 1,
+      },
+    };
+
+    const updateResult = await classCollection.updateOne(
+      { _id: new ObjectId(classId) },
+      updateClass
+    );
+    if (updateResult.modifiedCount > 0) {
+      // ! Update instructor info
+      const instructor = await userCollection.findOne({
+        email: instructorEmail,
+        role: "instructor",
+      });
+      if (instructor) {
+        const updateInstructor = {
+          $set: {
+            totalStudent: (instructor?.totalStudent || 0) + 1,
+          },
+        };
+        const instructorResult = await userCollection.updateOne(
+          { email: instructorEmail },
+          updateInstructor
+        );
+        if (instructorResult.modifiedCount > 0) {
+          // ! Remove from cart
+          const removeResult = await cartCollection.deleteOne({
+            _id: new ObjectId(cartId),
+          });
+          if (removeResult.deletedCount > 0) {
+            // ! Save in Orders
+            const result = await orderCollection.insertOne(data);
+            return res.send(result);
+          }
+        }
+      }
+    }
   }
 });
 module.exports = router;
