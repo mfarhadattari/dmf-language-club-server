@@ -100,7 +100,7 @@ router.post("/order-confirm", jwtVerify, studentVerify, async (req, res) => {
     const updateClass = {
       $set: {
         availableSeats: classInfo.availableSeats - 1,
-        enrolledStudents: classInfo.enrolledStudents + 1,
+        enrolledStudents: (classInfo.enrolledStudents || 0) + 1,
       },
     };
 
