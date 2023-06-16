@@ -160,17 +160,15 @@ router.get("/payment-history", jwtVerify, studentVerify, async (req, res) => {
   res.send(result);
 });
 
-// !----------------------- Student Profile ---------------------! //
-router.get("/profile", jwtVerify, studentVerify, async (req, res) => {
-  const userCollection = req.userCollection;
+// !----------------------- Student Data ---------------------! //
+router.get("/data", jwtVerify, studentVerify, async (req, res) => {
   const cartCollection = req.cartCollection;
   const orderCollection = req.orderCollection;
   const email = req.query.email;
   const query = { email: email };
-  const personalInfo = await userCollection.findOne(query);
   const totalOrders = await orderCollection.countDocuments(query);
   const totalCarts = await cartCollection.countDocuments(query);
-  res.send({ ...personalInfo, totalOrders, totalCarts });
+  res.send({ totalOrders, totalCarts });
 });
 
 module.exports = router;
