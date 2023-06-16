@@ -36,4 +36,16 @@ router.post("/create-user", async (req, res) => {
   res.send(result);
 });
 
+// !---------------- User Profile ----------------! //
+router.get("/user-profile", jwtVerify, async (req, res) => {
+  const userCollection = req.userCollection;
+  const email = req.query.email;
+  if (email !== req.decoded.email) {
+    return res.status(403).send({ error: true, message: "Access Forbidden" });
+  }
+  const query = { email: email };
+  const result = await userCollection.findOne(query);
+  res.send(result);
+});
+
 module.exports = router;
