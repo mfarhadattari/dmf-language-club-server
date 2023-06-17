@@ -10,10 +10,24 @@ router.get("/users", jwtVerify, adminVerify, async (req, res) => {
   res.send(result.reverse());
 });
 
+// ! --------------------------- Total Class ------------------------! //
+router.get("/total-classes", jwtVerify, adminVerify, async (req, res) => {
+  const classCollection = req.classCollection;
+  const result = await classCollection.estimatedDocumentCount();
+  res.send({ totalClasses: result });
+});
+
 // ! --------------------------- All Class ------------------------! //
 router.get("/classes", jwtVerify, adminVerify, async (req, res) => {
   const classCollection = req.classCollection;
-  const result = await classCollection.find().toArray();
+  const currentPage = req.query.currentPage;
+  const totalItem = req.query.totalItem;
+  const skip = totalItem - 10 * currentPage;
+  const result = await classCollection
+    .find()
+    .skip(skip < 0 ? 0 : skip)
+    .limit(skip < 0 ? skip + 10 : 10)
+    .toArray();
   res.send(result.reverse());
 });
 
