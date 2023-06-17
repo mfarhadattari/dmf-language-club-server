@@ -3,7 +3,6 @@ const { jwtVerify, adminVerify } = require("../middleware/middleware");
 const { ObjectId } = require("mongodb");
 const router = express.Router();
 
-
 // ! --------------------------- Total User ------------------------! //
 router.get("/total-users", jwtVerify, adminVerify, async (req, res) => {
   const userCollection = req.userCollection;
@@ -14,7 +13,14 @@ router.get("/total-users", jwtVerify, adminVerify, async (req, res) => {
 // ! ------------------------- All Users --------------------------! //
 router.get("/users", jwtVerify, adminVerify, async (req, res) => {
   const userCollection = req.userCollection;
-  const result = await userCollection.find().toArray();
+  const currentPage = req.query.currentPage;
+  const totalItem = req.query.totalItem;
+  const skip = totalItem - 10 * currentPage;
+  const result = await userCollection
+    .find()
+    .skip(skip < 0 ? 0 : skip)
+    .limit(skip < 0 ? skip + 10 : 10)
+    .toArray();
   res.send(result.reverse());
 });
 
