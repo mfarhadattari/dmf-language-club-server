@@ -3,6 +3,14 @@ const { jwtVerify, adminVerify } = require("../middleware/middleware");
 const { ObjectId } = require("mongodb");
 const router = express.Router();
 
+
+// ! --------------------------- Total User ------------------------! //
+router.get("/total-users", jwtVerify, adminVerify, async (req, res) => {
+  const userCollection = req.userCollection;
+  const result = await userCollection.estimatedDocumentCount();
+  res.send({ totalUsers: result });
+});
+
 // ! ------------------------- All Users --------------------------! //
 router.get("/users", jwtVerify, adminVerify, async (req, res) => {
   const userCollection = req.userCollection;
