@@ -1,4 +1,5 @@
 const express = require("express");
+const { ObjectId } = require("mongodb");
 const router = express.Router();
 
 // !------------------ POPULAR CLASSES ----------------! //
@@ -37,6 +38,20 @@ router.get("/all-instructors", async (req, res) => {
   const query = { role: "instructor" };
   const result = await userCollection.find(query).toArray();
   res.send(result);
+});
+
+// !------------------ CLASS OF AN INSTRUCTOR ----------------! //
+router.get("/instructors/:id", async (req, res) => {
+  const userCollection = req.userCollection;
+  const classCollection = req.classCollection;
+  const id = req.params.id;
+  const instructorInfo = await userCollection.findOne({
+    _id: new ObjectId(id),
+  });
+  const email = instructorInfo.email;
+  const query = { instructorEmail: email, status: "approve" };
+  const classes = await classCollection.find(query).toArray();
+  res.send({ instructorInfo, instructorClasses: classes.reverse() });
 });
 
 // !------------------ USERS REVIEWS ----------------! //
